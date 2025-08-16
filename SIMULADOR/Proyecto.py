@@ -109,4 +109,59 @@ class GestorMemoria:
         finally:
             self.procesos_en_ejecucion.remove(p)
             self._finalizar_proceso(p)
+
+    async def _planificador_loop(self):
+        while self.cola_espera or self.procesos_en_ejecucion:
+            arrancados_en_esta_vuelta = 0
+            for _ in range(len(self.cola_espera)):
+                p = self.cola_espera[0]
+                if self._puede_iniciar(p):
+                    self.cola_espera.popleft()
+                    self._iniciar_proceso(p)
+                    asyncio.create_task(self._simular_proceso(p))
+                    arrancados_en_esta_vuelta += 1
+                else:
+                    encontrado = False
+                    for i in range(1, len(self.cola_espera)):
+                        candidato = self.cola_espera[i]
+                        if self._puede_iniciar(candidato):
+                            self.cola_espera.rotate(-i)
+                            self.cola_espera.popleft()
+                            self._iniciar_proceso(candidato)
+                            asyncio.create_task(self._simular_proceso(candidato))
+                            arrancados_en_esta_vuelta += 1
+                            encontrado = True
+                            break
+                    if not encontrado:
+                        break
+            self.imprimir_estado()
+            if arrancados_en_esta_vuelta == 0 and self.procesos_en_ejecucion:
+                await asyncio.sleep(0.5)
+            elif arrancados_en_esta_vuelta == 0 and not self.procesos_en_ejecucion and self.cola_espera:
+                print("[AVISO] Hay procesos en cola que nunca podrán iniciar (piden más RAM que la disponible).")
+                break
+        print("\n[Simulación terminada] No quedan procesos en ejecución ni en cola (o ya no pueden iniciar).\n")
+    async def ejecutar(self):
+        await self._planificador_loop()
+def imprimir_menu():
+    print("\n===== Simulador de Gestión de Procesos (RAM 1 GB) =====")
+    print("1) Agregar proceso")
+    print("2) Agregar varios procesos de ejemplo")
+    print("3) Ver estado de memoria")
+    print("4) Iniciar simulación")
+    print("5) Salir")
+    print("========================================================")
+
+def pedir_int(msg: str, minimo: int = 1, maximo: Optional[int] = None) -> int:
+    while True:
+        try:
+            val = int(input(msg).strip())
+            if val < minimo or (maximo is not None and val > maximo):
+                print(f"Por favor ingresa un número válido (>= {minimo}" + (f" y <= {maximo}" if maximo else "") + ").")
+                continue
+            return val
+        except ValueError:
+            print("Entrada inválida, intenta de nuevo.")
+
+    
   
