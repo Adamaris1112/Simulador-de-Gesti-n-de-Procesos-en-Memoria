@@ -163,5 +163,60 @@ def pedir_int(msg: str, minimo: int = 1, maximo: Optional[int] = None) -> int:
         except ValueError:
             print("Entrada inválida, intenta de nuevo.")
 
+def pedir_str(msg: str) -> str:
+    return input(msg).strip()
+
+def agregar_proceso_desde_input(gm: GestorMemoria):
+    print("\n--- Crear Proceso ---")
+    nombre = pedir_str("Nombre (enter para generar automáticamente): ")
+    memoria = pedir_int("Memoria requerida (MB): ", minimo=1)
+    duracion = pedir_int("Duración (segundos): ", minimo=1)
+    gm.crear_proceso(nombre or None, memoria, duracion)
+
+def agregar_procesos_demo(gm: GestorMemoria, n: int = 5):
+    print(f"\n--- Agregando {n} procesos de ejemplo ---")
+    for _ in range(n):
+        mem = random.choice([64, 128, 256, 512, 768, 900])
+        dur = random.choice([2, 3, 4, 5, 6, 7, 8])
+        gm.crear_proceso(None, mem, dur)
+
+async def menu_interactivo():
+    gm = GestorMemoria()
+    while True:
+        imprimir_menu()
+        op = pedir_str("Elige una opción: ")
+        if op == "1":
+            agregar_proceso_desde_input(gm)
+        elif op == "2":
+            n = pedir_int("¿Cuántos procesos de ejemplo? ", minimo=1, maximo=50)
+            agregar_procesos_demo(gm, n)
+        elif op == "3":
+            gm.imprimir_estado()
+        elif op == "4":
+            print("\n*** Iniciando simulación... ***")
+            await gm.ejecutar()
+        elif op == "5":
+            print("Saliendo. ¡Gracias!😂")
+            return
+        else:
+            print("Opción no válida. Intenta de nuevo.")
+def main():
+    parser = argparse.ArgumentParser(description="Simulador de Gestión de Procesos en Memoria ")
+    parser.add_argument("--demo", action="store_true", help="Crea procesos de ejemplo y ejecuta la simulación automáticamente")
+    args = parser.parse_args()
+
+    if args.demo:
+        gm = GestorMemoria()
+        agregar_procesos_demo(gm, n=8)
+        print("\n*** Iniciando simulación DEMO... ***")
+        asyncio.run(gm.ejecutar())
+    else:
+        try:
+            asyncio.run(menu_interactivo())
+        except KeyboardInterrupt:
+            print("\nInterrumpido por el usuario.")
+
+if __name__ == "__main__":
+    main()
     
   
