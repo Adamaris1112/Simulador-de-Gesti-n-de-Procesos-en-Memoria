@@ -29,7 +29,11 @@ El Simulador de Gestión de Procesos y Memoria es una aplicación basada en pyth
    ```
 
 ## Capturas de Pantalla
-
+![Vista Capturas](PROYECTO\Simulador-de-Gesti-n-de-Procesos-en-Memoria\Capturas\Cap1.jpg)
+![Vista Capturas](PROYECTO\Simulador-de-Gesti-n-de-Procesos-en-Memoria\Capturas\Cap2.jpg)
+![Vista Capturas](PROYECTO\Simulador-de-Gesti-n-de-Procesos-en-Memoria\Capturas\Cap3.jpg)
+![Vista Capturas](PROYECTO\Simulador-de-Gesti-n-de-Procesos-en-Memoria\Capturas\Cap4.jpg)
+![Vista Capturas](PROYECTO\Simulador-de-Gesti-n-de-Procesos-en-Memoria\Capturas\Cap5.jpg)
 
 ## Uso
 - Inicia la aplicación para ver el estado actual de la memoria.
