@@ -34,5 +34,4 @@ El Simulador de Gestión de Procesos y Memoria es una aplicación basada en pyth
 ## Uso
 - Inicia la aplicación para ver el estado actual de la memoria.
 - Se utiliza el menu que se muestra en pantalla para hacer los diferentes procesos
-- 
-
+- Se hacen los diferentes procesos para el simulado
